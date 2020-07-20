@@ -1,0 +1,64 @@
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Assignment4 {
+
+        public static void main(String[] args) { run();}
+
+        public static void run(){
+            Scanner scanner = new Scanner(System.in);
+            String answer = scanner.nextLine();
+            int Score=0;
+            boolean end=false;
+            boolean quit=false;
+            user_interface();
+
+            String[] s=new String[10];
+            s[0]="Bil";
+            s[1]="Bok";
+            s[2]="Mus";
+            s[3]="Dator";
+            s[4]="Fönster";
+            s[5]="Kopp";
+            s[6]="Penna";
+            s[7]="Växt";
+            s[8]="Gitarr";
+            s[9]="Glasögon";
+
+            String[] e=new String[10];
+            e[0]="Car";
+            e[1]="Book";
+            e[2]="Mouse";
+            e[3]="Computer";
+            e[4]="Window";
+            e[5]="Cup";
+            e[6]="Pen";
+            e[7]="Plant";
+            e[8]="Guitar";
+            e[9]="Glasses";
+
+            while(!quit){
+
+
+            }
+
+
+        }
+
+        public static void user_interface(){
+            System.out.println("** GLOSÖVNING - ENGELSKA **");
+            System.out.println("Skriv det engelska ordet. Avsluta programmet med Q");
+        }
+
+
+    }
+
+
+
+
+//läsa in engelskt ord från användaren
+//berätta om ordet ärt korrekt, fel eller nästan korrekt (om en majoritet av bokstäverna är korrekt).
+// Avlsutas med q eller automatiskt efter 10 ord, med hjälp av en while-loop och ett boolean
+// Visa statistik över antal rätt, alltså en scorekeeper
