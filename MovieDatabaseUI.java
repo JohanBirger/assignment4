@@ -1,14 +1,21 @@
-package moviedatabase;
+package Inlämning5;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Scanner;
+
+
+
 /**
  * A command line user interface for a movie database.
  */
 public class MovieDatabaseUI {
     private Scanner _scanner;
+    String outputFilePath= "./moviedatabase.txt";
 
     /**
      * Construct a MovieDatabaseUI.
@@ -19,7 +26,7 @@ public class MovieDatabaseUI {
     /**
      * Start the movie database UI.
      */
-    public void startUI() {
+    public void startUI() throws IOException {
         _scanner = new Scanner(System.in);
         int input;
         boolean quit = false;
@@ -39,6 +46,8 @@ public class MovieDatabaseUI {
         //Close scanner to free resources
         _scanner.close();
     }
+
+
     /**
      * Get input and translate it to a valid number.
      *
@@ -60,68 +69,106 @@ public class MovieDatabaseUI {
                 input = -1;
             }
             if(input < min || input > max) {
-                System.out.println("Ogiltigt v�rde.");
+                System.out.println("Ogiltigt värde.");
             }
         }
         return input;
     }
+
     /**
      * Get search string from user, search title in the movie
      * database and present the search result.
      */
-    private void searchTitel() {
-        System.out.print("Ange s�kord: ");
+    private void searchTitel() throws IOException {
+        System.out.print("Ange sökord: ");
         String title = _scanner.nextLine().trim();
+        Scanner sc;
+        //call to search movie database based on input
 
-        //TODO: Add call to search movie database based on input
-        //added from stack overflow
-        File dir = new File(directory);
+        File file = new File(outputFilePath);
 
-        File[] matches = dir.listFiles(new FilenameFilter()
-        {
-            public boolean accept(File dir, String name)
-            {
-                return name.startsWith(title) && name.endsWith(".txt");
+        try{
+            sc = new Scanner(file);
+
+            while (sc.hasNextLine()){
+                final String lineFromFile=sc.nextLine();
+                final String line= lineFromFile.toLowerCase();
+                //dividing the string into title and review score
+                int lastIndex = line.length()-1;
+                String onlyTitle = lineFromFile.substring(0,lastIndex);
+                String onlyScore = lineFromFile.substring(lastIndex,lastIndex+1);
+                if(lineFromFile.contains(title.toLowerCase())) {
+                    System.out.println("Titel: "+onlyTitle + "Betyg: "+ onlyScore+"/5.");
+                }
             }
-        });
+        }catch(Exception e){
+            return;
 
-        //TODO: Present results to user
+        }
+
+        sc.close();
 
     }
+
+
     /**
      * Get search string from user, search review score in the movie
      * database and present the search result.
      */
     private void searchReviewScore() {
         int review = getNumberInput(_scanner, 1, 5, "Ange minimibetyg (1 - 5): ");
+        Scanner sc;
+        File file = new File(outputFilePath);
 
-        //TODO: Add call to search movie database based on input
+        try{
+            sc = new Scanner(file);
 
-        //TODO: Present results to user
+            while (sc.hasNextLine()){
+                final String lineFromFile=sc.nextLine();
+                //dividing the string into title and review score
+                int lastIndex = lineFromFile.length()-1;
+                String onlyTitle = lineFromFile.substring(0,lastIndex);
+                String stringScore = lineFromFile.substring(lastIndex,lastIndex+1);
+                int intScore = Integer.parseInt(stringScore);
+                if(intScore >=review) {
+                    System.out.println("Titel: "+onlyTitle + "Betyg: "+ intScore+"/5.");
+                }
 
+            }
+
+        }catch(Exception e){
+            return;
+
+        }
     }
+
+
     /**
      * Get information from user on the new movie and add
      * it to the database.
+     *
      */
-    private void addMovie() {
+    private void addMovie() throws IOException {
         System.out.print("Titel: ");
         String title = _scanner.nextLine().trim();
         int reviewScore = getNumberInput(_scanner, 1, 5, "Betyg (1 - 5): ");
 
-        //added by @Johan
-        FileInputStream fileIn = new FileInputStream(new File(sourceFilePath));
-        FileOutputStream fileOut = new FileOutputStream(new File(outputMVFilePath));
-        System.out.println("Movie and Review added to " + databaseDirPath);
+        Path newTextFilePath = Paths.get(outputFilePath);
 
+        if (!Files.exists(newTextFilePath)) {
+            Files.createFile(newTextFilePath);
+        }
 
-        while(fileIn.available() != 0) {
-            fileIn.read(buffer);
-            fileOut.write(buffer);
+        List<String> allLines = Files.readAllLines(newTextFilePath);
+
+        allLines.add(title+"\t"+reviewScore);
+
+        Files.write(newTextFilePath, allLines);
+
+        if(Files.exists(newTextFilePath)) {
+            System.out.println(title + " lades till i databasen med betyget " + reviewScore + ".");
         }
     }
-
-    //TODO: Add call to add movie into database
 
 
     /**
@@ -131,26 +178,18 @@ public class MovieDatabaseUI {
      */
     private String getMainMenu() {
         return  "-------------------\n" +
-                "1. S�k p� titel\n" +
-                "2. S�k p� betyg\n" +
-                "3. L�gg till film\n" +
+                "1. Sök på titel\n" +
+                "2. Sök på betyg\n" +
+                "3. Lägg till film\n" +
                 "-------------------\n" +
                 "4. Avsluta";
     }
 
 
 
-    String nameOfTextFile = "/"+title;
-    String nameOfFile = "/"+title+".m4v";
-    String fileProps = "This was added using newOutputStream";
-
-    String databaseDirPath="/Users/Johan Birgersson/IdeaProjects/test/databaseDirPath";
-    String infoTextSourceDir = "/Users/Johan Birgersson/IdeaProjects/test/testDir/testFile";
-    final int BUFFERSIZE = 4 * 1024;
-    String sourceFilePath = "/Users/Johan Birgersson/IdeaProjects/test/testDir/testMovie.m4v";
-    String outputMVFilePath = databaseDirPath + nameOfFile;
-    String outputTXTFilePath= databaseDirPath + nameOfTextFile;
 
 
-    byte[] buffer = new byte[BUFFERSIZE];
+
 }
+
+
