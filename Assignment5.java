@@ -1,8 +1,13 @@
-package moviedatabase;
+package Inlämning5;
+
+import java.io.IOException;
 
 /**
  * Entry point for a movie database as part of an assignment
  * in the course Introduction to Programming with Java.
+ *
+ * @commit by Johan Birgersson
+ *
  */
 public class Assignment5 {
     /**
@@ -10,8 +15,9 @@ public class Assignment5 {
      *
      * @param args not used
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //Construct and start the UI
         new MovieDatabaseUI().startUI();
     }
 }
+
